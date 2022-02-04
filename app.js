@@ -49,7 +49,7 @@ app.use((error, req, res, next) => {
 
 connectDB()
   .then(() => {
-    const server = app.listen(config.host.port, () => {
+    const server = app.listen(process.env.PORT || config.host.port, () => {
       console.log(`port listening ${config.host.port}...`);
     });
     initSocket(server);

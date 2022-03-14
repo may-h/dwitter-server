@@ -15,9 +15,7 @@ export function useVirtualId(schema) {
   schema.set("toObject", { virtuals: true });
 }
 
-// TODO (May): Delete blow
 let db;
-
 export function getTweets() {
   return db.collection("tweets");
 }

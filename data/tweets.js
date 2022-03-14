@@ -21,20 +21,10 @@ const Tweet = Mongoose.model("Tweet", tweetSchema);
 
 export async function getAll() {
   return Tweet.find().sort({ createdAt: -1 });
-  // return getTweets() //
-  //   .find()
-  //   .sort({ createdAt: -1 })
-  //   .toArray()
-  //   .then(mapTweets);
 }
 
 export async function getAllByUsername(username) {
   return Tweet.find({ username }).sort({ createdAt: -1 });
-  // return getTweets()
-  //   .find({ username })
-  //   .sort({ createdAt: -1 })
-  //   .toArray()
-  //   .then(mapTweets);
 }
 
 export async function getById(id) {
@@ -42,16 +32,14 @@ export async function getById(id) {
 }
 
 export async function create(text, userId) {
-  const { name, username, url } = await userRepository
-    .findById(userId)
-    .then((user) =>
-      new Tweet({
-        text,
-        userId,
-        name: user.name,
-        username: user.username,
-      }).save()
-    );
+  return await userRepository.findById(userId).then((user) =>
+    new Tweet({
+      text,
+      userId,
+      name: user.name,
+      username: user.username,
+    }).save()
+  );
 }
 
 export async function update(id, text) {

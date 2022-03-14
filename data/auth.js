@@ -14,7 +14,6 @@ const User = Mongoose.model("User", userSchema);
 
 export async function findByUsernmae(username) {
   return User.findOne({ username });
-  // return getUsers().findOne({ username }).then(mapOptionalUser); MongoDB
 }
 
 export async function findById(id) {
@@ -23,11 +22,4 @@ export async function findById(id) {
 
 export async function createUser(user) {
   return new User(user).save().then((data) => data.id);
-  // return getUsers()
-  //   .insertOne(user)
-  //   .then((data) => data.insertedId.toString());
-}
-
-function mapOptionalUser(user) {
-  return user ? { ...user, id: user._id } : user;
 }

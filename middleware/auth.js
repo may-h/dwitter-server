@@ -7,11 +7,25 @@ const AUTH_ERROR = {
 };
 
 export async function isAuth(req, res, next) {
+  //1. Cookie (for Browser)
+  // 2. Header (for None-Browser Clinet)
+
+  let token;
+  //click the header first
   const authHeader = req.get("Authorization");
-  if (!(authHeader && authHeader.startsWith("Bearer "))) {
+  if (authHeader && authHeader.startsWith("Bearer ")) {
+    token = authHeader.split(" ")[1];
+  }
+
+  // if no token in the header, check the cookie
+  if (!token) {
+    token = req.cookies["token"];
+  }
+
+  if (!token) {
     return res.status(401).json(AUTH_ERROR);
   }
-  const token = authHeader.split(" ")[1];
+
   jwt.verify(token, config.jwt.secretKey, async (error, decoded) => {
     if (error) {
       return res.status(401).json(AUTH_ERROR);
@@ -25,3 +39,23 @@ export async function isAuth(req, res, next) {
     next();
   });
 }
+
+/* TODO - swagger openapi에서 사용
+export const authHandler = async (req) => {
+  const authHeader = req.get("Authorization");
+  const token = authHeader.split(" ")[1];
+  try {
+    const decode = jwt.verify(token, config.jwt.secretKey);
+    const user = await userRepository.findById(decode.id);
+    if (!user) {
+      throw { status: 401, ...AUTH_ERROR };
+    }
+    req.userId = user.id;
+    req.token = decode;
+    return true;
+  } catch (err) {
+    console.log(err);
+    throw { status: 401, ...AUTH_ERROR };
+  }
+};
+*/
